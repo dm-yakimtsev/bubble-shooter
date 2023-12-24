@@ -20,5 +20,3 @@ class Background:
 
     def draw(self, display):
         display.blit(self.image, (0, 0))
-        # граница
-        pygame.draw.line(display, (220, 0, 0), (0, GUN_HEIGHT), (W, GUN_HEIGHT), 2)

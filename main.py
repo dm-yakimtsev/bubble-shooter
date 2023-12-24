@@ -1,6 +1,7 @@
 import pygame
 from game_obj import *
 from control import Grid
+from gun import Gun
 
 pygame.init()
 
@@ -9,9 +10,11 @@ def main():
     background = Background()
     game = Game()
     control = Grid()
+
     display = pygame.display.set_mode((W, H))
 
     pygame.display.set_caption('Bubble Shooter')
+    gun = Gun(pos=(W//2 - 50, GUN_HEIGHT))
     clock = pygame.time.Clock()
 
     while not game.game_over:
@@ -22,6 +25,7 @@ def main():
 
         background.draw(display)
         control.draw(display)
+        gun.draw(display)
         pygame.display.update()
         clock.tick(60)
 
