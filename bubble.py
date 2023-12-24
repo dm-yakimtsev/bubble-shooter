@@ -4,9 +4,11 @@ import pygame
 
 
 class Bubble:
-    def __init__(self, pos, image=None):
+    def __init__(self, row, col, pos, image=None):
         self.pos = pos
         self.radius = RADIUS
+        self.row = row
+        self.col = col
         if image is not None:
             self.image = image
         else:
@@ -16,10 +18,10 @@ class Bubble:
         if self.image is None:
             return
 
-        x, y = self.pos[0], self.pos[1]
-        surface = pygame.image.load(self.image).convert()
-        x, y, w, h = surface.get_rect()
-        surface = pygame.transform.scale(surface, (int(w * 0.1), int(h * 0.1)))
+        x, y = int(self.pos[0]), int(self.pos[1])
+        surface = pygame.image.load(self.image).convert_alpha()
+
+        surface = pygame.transform.scale(surface, (RADIUS * 2, RADIUS * 2))
         display.blit(surface, (x, y))
 
 

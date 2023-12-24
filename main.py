@@ -1,5 +1,6 @@
 import pygame
 from game_obj import *
+from control import Grid
 
 pygame.init()
 
@@ -7,6 +8,7 @@ pygame.init()
 def main():
     background = Background()
     game = Game()
+    control = Grid()
     display = pygame.display.set_mode((W, H))
 
     pygame.display.set_caption('Bubble Shooter')
@@ -17,7 +19,9 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+
         background.draw(display)
+        control.draw(display)
         pygame.display.update()
         clock.tick(60)
 
