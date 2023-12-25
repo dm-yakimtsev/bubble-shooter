@@ -13,15 +13,16 @@ class Bubble:
             self.image = image
         else:
             self.image = random.choice(BUBLE_IMAGES)
+        self.surface = self.get_image()
+
+    def get_image(self):
+        surface = pygame.image.load(self.image)
+        surface = pygame.transform.scale(surface, (RADIUS * 2, RADIUS * 2))
+        return surface
 
     def draw(self, display):
         if self.image is None:
             return
 
         x, y = int(self.pos[0]), int(self.pos[1])
-        surface = pygame.image.load(self.image).convert_alpha()
-
-        surface = pygame.transform.scale(surface, (RADIUS * 2, RADIUS * 2))
-        display.blit(surface, (x, y))
-
-
+        display.blit(self.surface, (x, y))
