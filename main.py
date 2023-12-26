@@ -14,18 +14,23 @@ def main():
     display = pygame.display.set_mode((W, H))
 
     pygame.display.set_caption('Bubble Shooter')
-    gun = Gun(pos=(W//2 - 50, GUN_HEIGHT))
+    gun = Gun(pos=(W // 2, H))
     clock = pygame.time.Clock()
+    # изначальная позиция для поворота пушки
+    pos = (W // 2, H // 2)
 
     while not game.game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
 
         background.draw(display)
         control.draw(display)
-        gun.draw(display)
+        # Поворачиваем пушку в связи с изменениями позиции
+        gun.rotate(display, pos)
         pygame.display.update()
         clock.tick(60)
 
