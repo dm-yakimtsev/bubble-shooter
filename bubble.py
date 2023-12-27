@@ -1,3 +1,5 @@
+import math
+
 from constants import *
 import random
 import pygame
@@ -26,3 +28,38 @@ class Bubble:
 
         x, y = int(self.pos[0]), int(self.pos[1])
         display.blit(self.surface, (x, y))
+
+
+class BubbleBullet(Bubble):
+    def __init__(self, row, col, pos, angle, image=None):
+        super().__init__(row, col, pos, image=None)
+
+        self.pos = pos
+        if image is not None:
+            self.image = image
+        else:
+            self.image = random.choice(BUBLE_IMAGES)
+        self.surface = self.get_image()
+
+        self.surface = self.get_image()
+        self.dx = math.cos(angle) * 20
+        # Чтобы шарик летел вверх нужно вычитать из y, потому что ось направлена вниз
+        self.dy = -math.sin(angle) * 20
+
+        # метод отвечает за то в пушке снаряд или нет
+        self.ischarged = True
+
+    def update(self, display):
+        if self.ischarged:
+            x, y = self.pos
+
+            if (x - RADIUS) <= 0:
+                self.dx *= -1
+            elif (x + RADIUS) >= W - RADIUS:
+                self.dx *= -1
+
+            self.pos = (x + self.dx, y + self.dy)
+            if y <= 0:
+                self.ischarged = False
+
+            self.draw(display)

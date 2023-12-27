@@ -24,13 +24,16 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                gun.shoot()
 
         background.draw(display)
         control.draw(display)
         # Поворачиваем пушку в связи с изменениями позиции
         gun.rotate(display, pos)
+        gun.update(display)
         pygame.display.update()
         clock.tick(60)
 
