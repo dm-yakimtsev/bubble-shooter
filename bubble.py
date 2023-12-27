@@ -6,11 +6,10 @@ import pygame
 
 
 class Bubble:
-    def __init__(self, row, col, pos, image=None):
+    def __init__(self, pos, image=None):
         self.pos = pos
         self.radius = RADIUS
-        self.row = row
-        self.col = col
+
         if image is not None:
             self.image = image
         else:
@@ -31,8 +30,8 @@ class Bubble:
 
 
 class BubbleBullet(Bubble):
-    def __init__(self, row, col, pos, angle, image=None):
-        super().__init__(row, col, pos, image=None)
+    def __init__(self, pos, angle, image=None):
+        super().__init__(pos, image=None)
 
         self.pos = pos
         if image is not None:
@@ -59,7 +58,29 @@ class BubbleBullet(Bubble):
                 self.dx *= -1
 
             self.pos = (x + self.dx, y + self.dy)
-            if y <= 0:
-                self.ischarged = False
 
             self.draw(display)
+
+
+class GridBubble(Bubble):
+    def __init__(self, row, col, pos, image=None):
+        super().__init__(pos, image)
+        self.row = row
+        self.col = col
+        self.alive = True
+        self.l = None
+        self.r = None
+        self.ul = None
+        self.up = None
+        self.dl = None
+        self.dr = None
+
+    def find_alive(self):
+        neighbours = [self.l, self.r, self.ul, self.up, self.dr, self.dl]
+        alive = []
+
+        for neighbour in neighbours:
+            if neighbour:
+                alive.append(neighbour)
+        print(alive)
+        return alive

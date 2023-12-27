@@ -26,13 +26,13 @@ class Gun:
         self.roteted_field = pygame.transform.rotate(self.roteted_field, -90)
 
         # Инициализируем класс пулли для использования метода ischarged
-        self.bullet_ball = BubbleBullet(0, 0, (self.pos[0] - RADIUS, self.pos[1]), self.angle)
+        self.bullet_ball = BubbleBullet((self.pos[0] - RADIUS, self.pos[1]), self.angle)
         self.bullet_ball.ischarged = False
 
     def shoot(self):
         # если заряда в пушке нет создаем новый
         if not self.bullet_ball.ischarged:
-            self.bullet_ball = BubbleBullet(0, 0, (self.pos[0] - RADIUS, self.pos[1]), radians(self.angle))
+            self.bullet_ball = BubbleBullet((self.pos[0] - RADIUS, self.pos[1]), radians(self.angle))
 
     def rotate(self, display, pos):
         self.angle = self.calc_angle(pos)
