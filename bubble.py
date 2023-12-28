@@ -71,16 +71,16 @@ class GridBubble(Bubble):
         self.l = None
         self.r = None
         self.ul = None
-        self.up = None
+        self.ur = None
         self.dl = None
         self.dr = None
 
     def find_alive(self):
-        neighbours = [self.l, self.r, self.ul, self.up, self.dr, self.dl]
+        neighbours = [self.l, self.r, self.ul, self.ur, self.dr, self.dl]
         alive = []
 
         for neighbour in neighbours:
             if neighbour:
                 alive.append(neighbour)
-        print(alive)
+
         return alive

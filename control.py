@@ -29,9 +29,10 @@ class Grid:
         for row in range(self.rows):
             for col in range(self.cols):
                 pos = bubble_pos(row, col)
-
+                bubble = GridBubble(row, col, pos, None)
+                bubble.alive = True
                 # Ложим каждый шарик в сетку
-                self.grid[row][col] = GridBubble(row, col, pos, None)
+                self.grid[row][col] = bubble
 
         # Находим соседей для каждого шара
         for row in range(self.rows):
@@ -56,7 +57,6 @@ class Grid:
                     for neighbour in bubble.find_alive():
                         if (neighbour not in self.points) and neighbour.alive:
                             self.points.append(neighbour)
-
 
     def find_neigbours(self, bubble):
         bubble.l = None
@@ -100,16 +100,37 @@ class Grid:
                 if col > 0:
                     bubble.dl = self.grid[row + 1][col - 1]
 
+    def check_colors(self, bubble, bubbles=None):
+
+        if bubbles is None:
+            bubbles = []
+        # рекурсивно ищет все одноцветные шары стоящие рядом
+        for neighbour in bubble.find_alive():
+            if neighbour.alive:
+                if (neighbour not in bubbles) and (neighbour.image == bubble.image):
+                    bubbles.append(neighbour)
+                    bubbles = self.check_colors(neighbour, bubbles)
+        return bubbles
+
+    def delete_bubbles(self, bubble):
+        bubles = self.check_colors(bubble)
+        if len(bubles) >= 3:
+            while len(bubles) > 0:
+                bubble = bubles.pop()
+                bubble.alive = False
+                bubble.image = None
+
     def check_collision(self, bullet):
         bullet_x, bullet_y = bullet.pos
         # делает плавнее превращение пули в шарик
         bullet_x += 0.5 * bullet.dx
         bullet_y += 0.5 * bullet.dy
-
+        size = (RADIUS * 2) - 5
+        bullet_rect = pygame.Rect(bullet_x, bullet_y, size, size)
         for bubble in self.points:
-            bubble_rect = pygame.Rect(bubble.pos[0], bubble.pos[1], RADIUS, RADIUS)
+            bubble_rect = pygame.Rect(bubble.pos[0], bubble.pos[1], size, size)
 
-            if bubble_rect.collidepoint(bullet_x, bullet_y):
+            if bubble_rect.colliderect(bullet_rect):
                 bullet.ischarged = False
                 self.collide = True
 
@@ -175,8 +196,10 @@ class Grid:
             self.check_collision(gun.bullet_ball)
 
         if self.collide:
-            self.make_bubble(gun.bullet_ball)
+            new_bubble = self.make_bubble(gun.bullet_ball)
+            self.delete_bubbles(new_bubble)
             self.append_buttom_row()
             self.find_exist()
             self.collide = False
+
         self.draw(display)
