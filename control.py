@@ -5,9 +5,8 @@ from constants import *
 from bubble import Bubble, GridBubble
 from random import choice
 
-
-def bubble_pos(row, col, offset=0):
-    x = (col * ((W - RADIUS) / GRID_COLS))
+def bubble_pos(row, col, offset=0, cols=GRID_COLS):
+    x = (col * ((W - RADIUS) / cols))
 
     # Сдвиг если строка нечетная
 
@@ -44,9 +43,6 @@ class Grid:
         self.find_exist()
         # Метод нужен для создания нового шара в сетки при попадании пули
         self.collide = False
-        # Метод нужен для расчета позиции шаров при изменении количества строчек
-        self.offset = 0
-
         self.hit_count = 0
 
     def find_exist(self):
@@ -56,13 +52,12 @@ class Grid:
         for row in range(self.rows):
             for col in range(self.cols):
                 bubble = self.grid[row][col]
-
                 if not bubble.alive:
                     for neighbour in bubble.find_alive():
                         if (neighbour not in self.points) and neighbour.alive:
                             self.points.append(neighbour)
 
-    def find_neigbours(self, bubble):
+    def find_neigbours(self, bubble, offset=0):
         bubble.l = None
         bubble.r = None
         bubble.ul = None
@@ -78,7 +73,7 @@ class Grid:
         if col < (self.cols - 1):
             bubble.r = self.grid[row][col + 1]
 
-        if not ((row % 2) == 0):
+        if not ((row % 2) == offset):
             if row > 0:
                 bubble.ul = self.grid[row - 1][col]
 
@@ -104,11 +99,27 @@ class Grid:
                 if col > 0:
                     bubble.dl = self.grid[row + 1][col - 1]
 
-    def check_colors(self, bubble, bubbles=None):
-
+    def find_hanging_balls(self, bubble, bubbles=None, hanging=False):
         if bubbles is None:
             bubbles = []
+        # если мы дошли до конца значит шар не левитирует
+        if bubble.row == 0:
+            return True
+        for neighbour in bubble.find_alive():
+            if neighbour.alive and neighbour not in bubbles:
+                bubbles.append(neighbour)
+
+                hanging = self.find_hanging_balls(neighbour, bubbles)
+                # Если мы нашли корень выходим останавливаем поиск.
+                if hanging:
+                    return True
+
+        return hanging
+
+    def check_colors(self, bubble, bubbles=None):
         # рекурсивно ищет все одноцветные шары стоящие рядом
+        if bubbles is None:
+            bubbles = []
         for neighbour in bubble.find_alive():
             if neighbour.alive:
                 if (neighbour not in bubbles) and (neighbour.image == bubble.image):
@@ -119,12 +130,17 @@ class Grid:
     def delete_bubbles(self, bubble):
         bubles = self.check_colors(bubble)
         if len(bubles) >= 3:
-            print(len(bubles))
             self.hit_count += 1
             while len(bubles) > 0:
                 bubble = bubles.pop()
                 bubble.alive = False
                 bubble.image = None
+                # проверяем что после удаления все соседи не остались без пары, иначе удаляем соседов тоже
+                for neighbour in bubble.find_alive():
+                    if neighbour.alive and (neighbour not in bubles):
+                        hanging = self.find_hanging_balls(neighbour)
+                        if not hanging:
+                            bubles.append(neighbour)
 
     def check_collision(self, bullet):
         bullet_x, bullet_y = bullet.pos
@@ -197,20 +213,16 @@ class Grid:
         self.rows += 1
         row = []
         for col in range(self.cols):
-            pos = bubble_pos(0, col)
-            bubble = GridBubble(0, col, pos, image=None)
+            bubble = GridBubble(0, col, (0, 0), image=None)
+            bubble.alive = True
             row.append(bubble)
         # объединяем
-        self.grid = [row] + self.grid
-
-        # меняем значение сдвига т.к меняется количество строчек
-        self.offset = 0 if self.offset == 1 else 1
+        self.grid.insert(0, row)
         for row in range(self.rows):
             for col in range(self.cols):
                 # cчитаем новые позиции и новых соседей для каждого шара
-                self.grid[row][col].pos = bubble_pos(row, col, offset=self.offset)
-                if row == 0 or row == 1:
-                    self.find_neigbours(self.grid[row][col])
+                self.grid[row][col].pos = bubble_pos(row, col)
+                self.find_neigbours(self.grid[row][col])
 
     def append_buttom_row(self):
         """Добавляем пустые шары на места которых будут становиться пули"""
@@ -229,18 +241,39 @@ class Grid:
             for col in range(self.cols):
                 self.find_neigbours(self.grid[row][col])
 
+    def del_buttom_row(self):
+        self.grid.pop()
+        self.rows -= 1
+        for col in range(self.cols):
+            self.find_neigbours(self.grid[self.rows - 1][col])
+
+    def update_rows(self):
+
+        if self.hit_count == UPDATE_ROW_COUNT:
+            # Добавляем верхний ряд
+            self.hit_count = 0
+            self.append_top_row()
+
+        for col in range(self.cols):
+            # Добавляем нижний ряд если его еще нет
+            if self.grid[self.rows - 1][col].alive:
+                self.append_buttom_row()
+                return
+
+        # Удоляем нижний ряд если он над ним нет ни одного живого шара
+        for col in range(self.cols):
+            if self.grid[self.rows - 2][col].alive:
+                return
+
+        self.del_buttom_row()
+
     def update_state(self, display, gun, game):
         if gun.bullet_ball.ischarged:
             self.check_collision(gun.bullet_ball)
 
         if self.collide:
             new_bubble = self.make_bubble(gun.bullet_ball)
-            self.append_buttom_row()
-            if self.hit_count == UPDATE_ROW_COUNT:
-                self.hit_count = 0
-
-                self.append_top_row()
-
+            self.update_rows()
             # После всех обновлений сетки нужно проверять цвета рядом стоящих шаров
             self.delete_bubbles(new_bubble)
             self.find_exist()
