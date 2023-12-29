@@ -144,6 +144,14 @@ class Grid:
             bullet.ischarged = False
             self.collide = True
 
+    def check_game_over(self, game):
+        # проверяем есть ли в последнем возможном ряду шары
+        if self.rows > 19:
+            for col in range(self.cols):
+
+                if self.grid[18][col].alive:
+                    game.game_over = True
+
     def make_bubble(self, bullet):
         collide_point = bullet.pos
         empty = []
@@ -221,7 +229,7 @@ class Grid:
             for col in range(self.cols):
                 self.find_neigbours(self.grid[row][col])
 
-    def update_state(self, display, gun):
+    def update_state(self, display, gun, game):
         if gun.bullet_ball.ischarged:
             self.check_collision(gun.bullet_ball)
 
@@ -237,5 +245,6 @@ class Grid:
             self.delete_bubbles(new_bubble)
             self.find_exist()
             self.collide = False
+            self.check_game_over(game)
 
         self.draw(display)

@@ -30,7 +30,7 @@ def main():
                 gun.shoot()
 
         background.draw(display)
-        control.update_state(display, gun)
+        control.update_state(display, gun, game)
         # Поворачиваем пушку в связи с изменениями позиции
         gun.rotate(display, pos)
         gun.update(display)
