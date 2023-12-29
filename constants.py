@@ -10,3 +10,6 @@ BUBLE_IMAGES = ['data/blue.png', 'data/green.png', 'data/red.png', 'data/yellow.
 # Постоянные отвечающие за сетку
 GRID_COLS = 15
 GRID_ROWS = 5
+
+# Отвечает за количесво попаданий для создания нового ряда шаров
+UPDATE_ROW_COUNT = 2
