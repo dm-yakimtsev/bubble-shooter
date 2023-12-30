@@ -25,7 +25,7 @@ class Bubble:
         if self.image is None:
             return
 
-        x, y = int(self.pos[0]), int(self.pos[1])
+        x, y = self.pos[0], self.pos[1]
         display.blit(self.surface, (x, y))
 
 

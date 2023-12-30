@@ -5,12 +5,12 @@ from constants import *
 from bubble import Bubble, GridBubble
 from random import choice
 
-def bubble_pos(row, col, offset=0, cols=GRID_COLS):
-    x = (col * ((W - RADIUS) / cols))
+
+def bubble_pos(row, col, offset):
+    x = (col * ((W - RADIUS) / GRID_COLS))
 
     # Сдвиг если строка нечетная
-
-    if not (row % 2) == offset:
+    if not ((row % 2) == offset):
         x += RADIUS
 
     y = RADIUS + (row * RADIUS * 2)
@@ -22,12 +22,12 @@ class Grid:
     def __init__(self):
         self.rows = GRID_ROWS
         self.cols = GRID_COLS
-
+        self.offset = False
         self.grid = [[0 for col in range(self.cols)] for row in range(self.rows)]
         self.points = []
         for row in range(self.rows):
             for col in range(self.cols):
-                pos = bubble_pos(row, col)
+                pos = bubble_pos(row, col, self.offset)
                 bubble = GridBubble(row, col, pos, None)
                 bubble.alive = True
                 # Ложим каждый шарик в сетку
@@ -57,7 +57,7 @@ class Grid:
                         if (neighbour not in self.points) and neighbour.alive:
                             self.points.append(neighbour)
 
-    def find_neigbours(self, bubble, offset=0):
+    def find_neigbours(self, bubble):
         bubble.l = None
         bubble.r = None
         bubble.ul = None
@@ -73,7 +73,7 @@ class Grid:
         if col < (self.cols - 1):
             bubble.r = self.grid[row][col + 1]
 
-        if not ((row % 2) == offset):
+        if not ((row % 2) == self.offset):
             if row > 0:
                 bubble.ul = self.grid[row - 1][col]
 
@@ -218,17 +218,20 @@ class Grid:
             row.append(bubble)
         # объединяем
         self.grid.insert(0, row)
+        self.offset = not self.offset
         for row in range(self.rows):
             for col in range(self.cols):
                 # cчитаем новые позиции и новых соседей для каждого шара
-                self.grid[row][col].pos = bubble_pos(row, col)
+                self.grid[row][col].pos = bubble_pos(row, col, self.offset)
                 self.find_neigbours(self.grid[row][col])
+
 
     def append_buttom_row(self):
         """Добавляем пустые шары на места которых будут становиться пули"""
         row = []
         for col in range(self.cols):
-            pos = bubble_pos(self.rows, col)
+
+            pos = bubble_pos(self.rows, col, self.offset)
             bubble = GridBubble(self.rows, col, pos, image=None)
             bubble.alive = False
             bubble.image = None
@@ -273,6 +276,7 @@ class Grid:
 
         if self.collide:
             new_bubble = self.make_bubble(gun.bullet_ball)
+
             self.update_rows()
             # После всех обновлений сетки нужно проверять цвета рядом стоящих шаров
             self.delete_bubbles(new_bubble)

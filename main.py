@@ -20,20 +20,24 @@ def main():
     pos = (W // 2, H // 2)
 
     while not game.game_over:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.MOUSEMOTION:
-                pos = pygame.mouse.get_pos()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                gun.shoot()
+        if not game.game_running:
+            background.draw(display)
+            game.start_menu(display)
+        else:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.MOUSEMOTION:
+                    pos = pygame.mouse.get_pos()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    gun.shoot()
 
-        background.draw(display)
-        control.update_state(display, gun, game)
-        # Поворачиваем пушку в связи с изменениями позиции
-        gun.rotate(display, pos)
-        gun.update(display)
+            background.draw(display)
+            control.update_state(display, gun, game)
+            # Поворачиваем пушку в связи с изменениями позиции
+            gun.rotate(display, pos)
+            gun.update(display)
         pygame.display.update()
         clock.tick(60)
 
