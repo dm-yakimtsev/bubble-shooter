@@ -19,25 +19,37 @@ def main():
     # изначальная позиция для поворота пушки
     pos = (W // 2, H // 2)
 
-    while not game.game_over:
-        if not game.game_running:
+    while True:
+        # Если мы проиграли рисуем меню окончания
+        if game.game_over:
             background.draw(display)
-            game.start_menu(display)
+            game.game_over_menu(display)
         else:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                if event.type == pygame.MOUSEMOTION:
-                    pos = pygame.mouse.get_pos()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    gun.shoot()
 
-            background.draw(display)
-            control.update_state(display, gun, game)
-            # Поворачиваем пушку в связи с изменениями позиции
-            gun.rotate(display, pos)
-            gun.update(display)
+            # Если игра еще не начиналась рисуем стартовое меню
+            if not game.game_running:
+                background.draw(display)
+                game.start_menu(display)
+            else:
+                # Если была нажата кнопка start обновляем сетку
+                if game.new_game:
+                    game.new_game = False
+                    control = Grid()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        quit()
+                    if event.type == pygame.MOUSEMOTION:
+                        pos = pygame.mouse.get_pos()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        gun.shoot()
+
+                background.draw(display)
+                # Обновляем сетку
+                control.update_state(display, gun, game)
+                # Поворачиваем пушку в связи с изменениями позиции
+                gun.rotate(display, pos)
+                gun.update(display)
         pygame.display.update()
         clock.tick(60)
 
