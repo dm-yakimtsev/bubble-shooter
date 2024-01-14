@@ -2,8 +2,15 @@ from math import sqrt
 
 import pygame
 from constants import *
-from bubble import Bubble, GridBubble
+from bubble import Bubble, GridBubble, AnimatedSprite
 from random import choice
+
+
+def get_image(filename):
+    bg = pygame.image.load(f'data/{filename}')
+    x, y, w, h = bg.get_rect()
+    bg = pygame.transform.scale(bg, (int(w * 0.14), int(h * 0.14)))
+    return bg
 
 
 def bubble_pos(row, col, offset):
@@ -20,6 +27,9 @@ def bubble_pos(row, col, offset):
 
 class Grid:
     def __init__(self):
+        # Группа для отрисовки спрайтов
+        self.all_sprites = pygame.sprite.Group()
+        self.animations = []
         self.rows = GRID_ROWS
         self.cols = GRID_COLS
         self.offset = False
@@ -133,6 +143,10 @@ class Grid:
             self.hit_count += 1
             while len(bubles) > 0:
                 bubble = bubles.pop()
+                x, y = bubble.pos
+                # Добавляем спрайт взрыва в общий список
+                self.animations.append(AnimatedSprite(get_image('anim.png'), 3,
+                                                      3, x, y, self.all_sprites))
                 bubble.alive = False
                 bubble.image = None
                 # проверяем что после удаления все соседи не остались без пары, иначе удаляем соседов тоже
@@ -225,12 +239,10 @@ class Grid:
                 self.grid[row][col].pos = bubble_pos(row, col, self.offset)
                 self.find_neigbours(self.grid[row][col])
 
-
     def append_buttom_row(self):
         """Добавляем пустые шары на места которых будут становиться пули"""
         row = []
         for col in range(self.cols):
-
             pos = bubble_pos(self.rows, col, self.offset)
             bubble = GridBubble(self.rows, col, pos, image=None)
             bubble.alive = False
@@ -270,7 +282,7 @@ class Grid:
 
         self.del_buttom_row()
 
-    def update_state(self, display, gun, game):
+    def update_state(self, display, gun, game, iteration):
         if gun.bullet_ball.ischarged:
             self.check_collision(gun.bullet_ball)
 
@@ -285,3 +297,9 @@ class Grid:
             self.check_game_over(game)
 
         self.draw(display)
+        for el in self.animations:
+            # На каждой пятой итерации обновляем спрайт взрыва
+            if iteration % 5 == 0:
+                el.update()
+
+        self.all_sprites.draw(display)

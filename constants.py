@@ -12,4 +12,4 @@ GRID_COLS = 14
 GRID_ROWS = 5
 
 # Отвечает за количесво попаданий для создания нового ряда шаров
-UPDATE_ROW_COUNT = 5
+UPDATE_ROW_COUNT = 3

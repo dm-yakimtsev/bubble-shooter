@@ -7,6 +7,8 @@ pygame.init()
 
 
 def main():
+    # Cчетчик итераций
+    iteration = 0
     background = Background()
     game = Game()
     control = Grid()
@@ -20,6 +22,7 @@ def main():
     pos = (W // 2, H // 2)
 
     while True:
+        iteration += 1
         # Если мы проиграли рисуем меню окончания
         if game.game_over:
             background.draw(display)
@@ -46,7 +49,7 @@ def main():
 
                 background.draw(display)
                 # Обновляем сетку
-                control.update_state(display, gun, game)
+                control.update_state(display, gun, game, iteration)
                 # Поворачиваем пушку в связи с изменениями позиции
                 gun.rotate(display, pos)
                 gun.update(display)
