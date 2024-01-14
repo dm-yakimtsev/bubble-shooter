@@ -28,15 +28,24 @@ class Gun:
         # Инициализируем класс пулли для использования метода ischarged
         self.bullet_ball = BubbleBullet((self.pos[0] - RADIUS, self.pos[1]), self.angle)
         self.bullet_ball.ischarged = False
-        # Пуля которая будет выстреленна в следующий раз
+        # Пули которые будут выстреленны в следующий раз
         self.charged = Bubble((self.pos[0] - RADIUS, self.pos[1] - 50 + RADIUS // 2))
+        self.future1 = Bubble((self.charged.pos[0] + RADIUS * 2 + 5, self.charged.pos[1]))
+        self.future2 = Bubble((self.future1.pos[0] + RADIUS * 2 + 5, self.future1.pos[1]))
+        self.future3 = Bubble((self.future2.pos[0] + RADIUS * 2 + 5, self.future2.pos[1]))
 
     def shoot(self):
         # если заряда в пушке нет создаем новый
         if not self.bullet_ball.ischarged:
             self.bullet_ball = BubbleBullet((self.pos[0] - RADIUS, self.pos[1]), radians(self.angle),
                                             image=self.charged.image)
-            self.charged = Bubble((self.pos[0] - RADIUS, self.pos[1] - 50 + RADIUS // 2))
+            self.charged = Bubble((self.pos[0] - RADIUS, self.pos[1] - 50 + RADIUS // 2),
+                                  image=self.future1.image)
+            self.future1 = Bubble((self.charged.pos[0] + RADIUS * 2 + 5, self.charged.pos[1]),
+                                  image=self.future2.image)
+            self.future2 = Bubble((self.future1.pos[0] + RADIUS * 2 + 5, self.future1.pos[1]),
+                                  image=self.future3.image)
+            self.future3 = Bubble((self.future2.pos[0] + RADIUS * 2 + 5, self.future2.pos[1]))
 
     def rotate(self, display, pos):
         self.angle = self.calc_angle(pos)
@@ -65,3 +74,6 @@ class Gun:
         """Обновление позиции пули"""
         self.bullet_ball.update(display)
         self.charged.draw(display)
+        self.future1.draw(display)
+        self.future2.draw(display)
+        self.future3.draw(display)
