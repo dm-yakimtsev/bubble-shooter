@@ -6,17 +6,18 @@ class Game:
     def __init__(self):
         self.game_over = False
         self.game_running = False
-
+        self.score = 0
         self.new_game = False
-        self.font = pygame.font.Font(None, 30)
-        self.font2 = pygame.font.Font(None, 52)
+        self.font = pygame.font.Font(None, 30) # Для кнопок
+        self.font2 = pygame.font.Font(None, 52) # Для надписей
         self.start_text = self.font.render("START!", True, (255, 255, 255))
         self.exit_text = self.font.render("EXIT", True, (255, 255, 255))
         self.game_over_text = self.font2.render("GAME OVER!", True, (255, 255, 255))
-
-        self.start_rect = pygame.Rect(W // 2 - 35, H // 2 - 50, 80, 30)
-        self.exit_rect = pygame.Rect(W // 2 - 25, H // 2, 80, 30)
-        self.game_over_rect = pygame.Rect(W // 2 - 110, H // 2 - 130, 150, 30)
+        self.score_text = self.font2.render(f"{self.score}", True, (255, 255, 255))
+        self.scrore_rect = pygame.Rect(W // 2 - 120, H // 2 - 120, 200, 30)
+        self.start_rect = pygame.Rect(W // 2 - 35, H // 2 - 20, 80, 30)
+        self.exit_rect = pygame.Rect(W // 2 - 25, H // 2 + 20, 80, 30)
+        self.game_over_rect = pygame.Rect(W // 2 - 110, H // 2 - 190, 150, 30)
 
     def start_menu(self, display):
 
@@ -49,6 +50,10 @@ class Game:
     def game_over_menu(self, display):
         if self.game_over:
             self.game_running = False
+            # Делаем счетчик очков больше и размещаем в центре
+            self.score_text = self.font2.render(f"SCORE - {self.score}", True, (255, 255, 255))
+            self.scrore_rect = pygame.Rect(W // 2 - 100, H // 2 - 120, 150, 30)
+            display.blit(self.score_text, self.scrore_rect)
             display.blit(self.game_over_text, self.game_over_rect)
             display.blit(self.start_text, self.start_rect)
             display.blit(self.exit_text, self.exit_rect)

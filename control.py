@@ -137,7 +137,7 @@ class Grid:
                     bubbles = self.check_colors(neighbour, bubbles)
         return bubbles
 
-    def delete_bubbles(self, bubble):
+    def delete_bubbles(self, bubble, game):
         bubles = self.check_colors(bubble)
         if len(bubles) >= 3:
             self.hit_count += 1
@@ -147,6 +147,7 @@ class Grid:
                 # Добавляем спрайт взрыва в общий список
                 self.animations.append(AnimatedSprite(get_image('anim.png'), 3,
                                                       3, x, y, self.all_sprites))
+                game.score += 10
                 bubble.alive = False
                 bubble.image = None
                 # проверяем что после удаления все соседи не остались без пары, иначе удаляем соседов тоже
@@ -291,7 +292,7 @@ class Grid:
 
             self.update_rows()
             # После всех обновлений сетки нужно проверять цвета рядом стоящих шаров
-            self.delete_bubbles(new_bubble)
+            self.delete_bubbles(new_bubble, game)
             self.find_exist()
             self.collide = False
             self.check_game_over(game)

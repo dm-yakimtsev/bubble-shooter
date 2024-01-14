@@ -38,6 +38,7 @@ def main():
                 if game.new_game:
                     game.new_game = False
                     control = Grid()
+
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -48,6 +49,12 @@ def main():
                         gun.shoot()
 
                 background.draw(display)
+
+                # Отображаем рекорд внизу
+                game.score_text = game.font.render(f"SCORE - {game.score}", True, (255, 255, 255))
+                game.scrore_rect = pygame.Rect(20, H - 20, 150, 30)
+                display.blit(game.score_text, game.scrore_rect)
+
                 # Обновляем сетку
                 control.update_state(display, gun, game, iteration)
                 # Поворачиваем пушку в связи с изменениями позиции
