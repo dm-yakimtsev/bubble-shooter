@@ -14,9 +14,9 @@ def main():
     control = Grid()
 
     display = pygame.display.set_mode((W, H))
-    pygame.mixer.music.load("data/b703eddf4554b45.mp3")
+    pygame.mixer.music.load(r"data/b703eddf4554b45.mp3")
     pygame.mixer.music.play(-1)
-    pygame.display.set_caption('Bubble Shooter')
+    pygame.display.set_caption(r'Bubble Shooter')
     gun = Gun(pos=(W // 2, H))
     clock = pygame.time.Clock()
     # изначальная позиция для поворота пушки
@@ -43,7 +43,7 @@ def main():
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
-                        quit()
+                        sys.exit()
                     if event.type == pygame.MOUSEMOTION:
                         pos = pygame.mouse.get_pos()
                     if event.type == pygame.MOUSEBUTTONDOWN:

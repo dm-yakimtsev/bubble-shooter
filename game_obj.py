@@ -1,6 +1,6 @@
 import pygame
 from constants import *
-
+import sys
 
 class Game:
     def __init__(self):
@@ -8,8 +8,8 @@ class Game:
         self.game_running = False
         self.score = 0
         self.new_game = False
-        self.font = pygame.font.Font(None, 30) # Для кнопок
-        self.font2 = pygame.font.Font(None, 52) # Для надписей
+        self.font = pygame.font.Font(None, 30)  # Для кнопок
+        self.font2 = pygame.font.Font(None, 52)  # Для надписей
         self.start_text = self.font.render("START!", True, (255, 255, 255))
         self.exit_text = self.font.render("EXIT", True, (255, 255, 255))
         self.game_over_text = self.font2.render("GAME OVER!", True, (255, 255, 255))
@@ -30,10 +30,10 @@ class Game:
                         self.game_running = True
                     if self.exit_rect.collidepoint(event.pos):
                         pygame.quit()
-                        exit()
+                        sys.exit()
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
                 # Рисует задний фон в тексте при наведении мыши
                 if event.type == pygame.MOUSEMOTION:
                     if self.start_rect.collidepoint(event.pos):
@@ -66,10 +66,10 @@ class Game:
                         self.new_game = True
                     if self.exit_rect.collidepoint(event.pos):
                         pygame.quit()
-                        exit()
+                        sys.exit()
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    sys.exit()
                 if event.type == pygame.MOUSEMOTION:
                     if self.start_rect.collidepoint(event.pos):
                         self.start_text = self.font.render("START!", True, (255, 255, 255),
@@ -88,7 +88,7 @@ class Background:
         self.image = self.get_image()
 
     def get_image(self):
-        bg = pygame.image.load('data/bg.jpg')
+        bg = pygame.image.load(r'data/bg.jpg')
         x, y, w, h = bg.get_rect()
         bg = pygame.transform.scale(bg, (int(W), int(H)))
         return bg
