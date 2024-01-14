@@ -85,7 +85,7 @@ class Background:
     def get_image(self):
         bg = pygame.image.load('data/bg.jpg')
         x, y, w, h = bg.get_rect()
-        bg = pygame.transform.scale(bg, (int(w * 0.18), int(h * 0.18)))
+        bg = pygame.transform.scale(bg, (int(W), int(H)))
         return bg
 
     def draw(self, display):
