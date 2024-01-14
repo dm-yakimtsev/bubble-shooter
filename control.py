@@ -29,6 +29,8 @@ class Grid:
     def __init__(self):
         # Группа для отрисовки спрайтов
         self.all_sprites = pygame.sprite.Group()
+        # Звук лопания шара
+        self.sound = pygame.mixer.Sound("data/vozdushnyii-shar-vzryiv-odinochnyii-suhoi_KjzM6FX5.mp3")
         self.animations = []
         self.rows = GRID_ROWS
         self.cols = GRID_COLS
@@ -139,14 +141,18 @@ class Grid:
 
     def delete_bubbles(self, bubble, game):
         bubles = self.check_colors(bubble)
+
         if len(bubles) >= 3:
             self.hit_count += 1
+            # Проигрываем звук взрыва
+            self.sound.play()
             while len(bubles) > 0:
                 bubble = bubles.pop()
                 x, y = bubble.pos
                 # Добавляем спрайт взрыва в общий список
                 self.animations.append(AnimatedSprite(get_image('anim.png'), 3,
                                                       3, x, y, self.all_sprites))
+
                 game.score += 10
                 bubble.alive = False
                 bubble.image = None

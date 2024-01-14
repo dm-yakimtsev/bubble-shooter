@@ -14,7 +14,8 @@ def main():
     control = Grid()
 
     display = pygame.display.set_mode((W, H))
-
+    pygame.mixer.music.load("data/b703eddf4554b45.mp3")
+    pygame.mixer.music.play(-1)
     pygame.display.set_caption('Bubble Shooter')
     gun = Gun(pos=(W // 2, H))
     clock = pygame.time.Clock()
