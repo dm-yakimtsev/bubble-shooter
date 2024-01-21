@@ -8,8 +8,8 @@ class Gun:
     def __init__(self, pos):
         self.angle = 0
         self.pos = pos
-        self.gun = pygame.image.load('data/пушка.png').convert_alpha()
-        self.gun = pygame.transform.scale(self.gun, (100, 150))
+        self.gun = pygame.image.load(r'data/пушка.png').convert_alpha()
+        self.gun = pygame.transform.scale(self.gun, (75, 100))
         self.gun_rect = self.gun.get_rect()
 
         self.gun_w = self.gun_rect[2]

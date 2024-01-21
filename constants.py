@@ -5,7 +5,7 @@ GUN_HEIGHT = H - 150
 
 # Постоянные отвечающие за шары
 RADIUS = 18
-BUBLE_IMAGES = ['data/blue.png', 'data/green.png', 'data/red.png', 'data/yellow.png', 'data/purple.png']
+BUBLE_IMAGES = [r'data/blue.png', r'data/green.png', r'data/red.png', r'data/yellow.png', r'data/purple.png']
 
 # Постоянные отвечающие за сетку
 GRID_COLS = 14
